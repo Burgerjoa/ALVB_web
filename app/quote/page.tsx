@@ -1,0 +1,354 @@
+'use client'
+
+import { useState } from 'react'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+
+export default function Quote() {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    businessType: '',
+    projectType: '',
+    area: '',
+    budget: '',
+    location: '',
+    preferredDate: '',
+    preferredTime: '',
+    message: '',
+  })
+
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Form submitted:', formData)
+    setIsSubmitted(true)
+
+    setTimeout(() => {
+      setIsSubmitted(false)
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        businessType: '',
+        projectType: '',
+        area: '',
+        budget: '',
+        location: '',
+        preferredDate: '',
+        preferredTime: '',
+        message: '',
+      })
+    }, 3000)
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+
+      {/* Hero Section */}
+      <section className="pt-24 pb-16 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+              온라인 견적
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              간단한 정보만 입력하시면 24시간 내로 상세한 견적을 보내드립니다
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Form Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {isSubmitted ? (
+            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-12 text-center">
+              <div className="text-6xl mb-4">✓</div>
+              <h2 className="text-3xl font-bold mb-4 text-gray-900">
+                견적 신청이 완료되었습니다
+              </h2>
+              <p className="text-lg text-gray-600">
+                24시간 내로 담당자가 연락드리겠습니다
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Contact Info */}
+              <div className="bg-gray-50 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">연락처 정보</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                      이름 *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="홍길동"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      연락처 *
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="010-1234-5678"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      이메일 *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="example@email.com"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Project Info */}
+              <div className="bg-gray-50 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">프로젝트 정보</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="businessType" className="block text-sm font-medium text-gray-700 mb-2">
+                      업종 *
+                    </label>
+                    <select
+                      id="businessType"
+                      name="businessType"
+                      required
+                      value={formData.businessType}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">선택해주세요</option>
+                      <option value="카페">카페</option>
+                      <option value="레스토랑">레스토랑</option>
+                      <option value="리테일">리테일/샵</option>
+                      <option value="오피스">오피스</option>
+                      <option value="뷰티">뷰티/살롱</option>
+                      <option value="기타">기타</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="projectType" className="block text-sm font-medium text-gray-700 mb-2">
+                      인테리어 범위 *
+                    </label>
+                    <select
+                      id="projectType"
+                      name="projectType"
+                      required
+                      value={formData.projectType}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">선택해주세요</option>
+                      <option value="풀인테리어">풀인테리어 (전체)</option>
+                      <option value="부분인테리어">부분인테리어</option>
+                      <option value="리모델링">리모델링</option>
+                      <option value="상담필요">상담 후 결정</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-2">
+                      평수 *
+                    </label>
+                    <input
+                      type="text"
+                      id="area"
+                      name="area"
+                      required
+                      value={formData.area}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="예: 30평"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
+                      예산
+                    </label>
+                    <select
+                      id="budget"
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">선택해주세요</option>
+                      <option value="3000만원 이하">3,000만원 이하</option>
+                      <option value="3000-5000만원">3,000만원 - 5,000만원</option>
+                      <option value="5000-1억원">5,000만원 - 1억원</option>
+                      <option value="1억원 이상">1억원 이상</option>
+                      <option value="상담필요">상담 후 결정</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+                      위치 *
+                    </label>
+                    <input
+                      type="text"
+                      id="location"
+                      name="location"
+                      required
+                      value={formData.location}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="서울시 강남구"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Meeting Schedule */}
+              <div className="bg-gray-50 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">미팅 희망 일정</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-2">
+                      희망 날짜
+                    </label>
+                    <input
+                      type="date"
+                      id="preferredDate"
+                      name="preferredDate"
+                      value={formData.preferredDate}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-2">
+                      희망 시간
+                    </label>
+                    <select
+                      id="preferredTime"
+                      name="preferredTime"
+                      value={formData.preferredTime}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">선택해주세요</option>
+                      <option value="오전 10-12시">오전 10-12시</option>
+                      <option value="오후 12-2시">오후 12-2시</option>
+                      <option value="오후 2-4시">오후 2-4시</option>
+                      <option value="오후 4-6시">오후 4-6시</option>
+                      <option value="협의">협의 후 결정</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Message */}
+              <div className="bg-gray-50 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">추가 요청사항</h2>
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    상세 내용
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={6}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="프로젝트에 대한 자세한 내용이나 원하시는 스타일 등을 자유롭게 작성해주세요."
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="text-center pt-4">
+                <button
+                  type="submit"
+                  className="bg-primary-600 text-white px-12 py-4 rounded-full text-lg font-semibold hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  견적 신청하기
+                </button>
+                <p className="text-sm text-gray-500 mt-4">
+                  * 표시된 항목은 필수 입력사항입니다
+                </p>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* Info Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+              <div className="text-5xl mb-4">⚡</div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">빠른 답변</h3>
+              <p className="text-gray-600">
+                24시간 내 상세한 견적서를 보내드립니다
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+              <div className="text-5xl mb-4">💰</div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">무료 견적</h3>
+              <p className="text-gray-600">
+                견적 및 초기 상담은 완전 무료입니다
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+              <div className="text-5xl mb-4">👨‍💼</div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">전문 상담</h3>
+              <p className="text-gray-600">
+                경험 많은 전문가가 직접 상담해드립니다
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  )
+}
