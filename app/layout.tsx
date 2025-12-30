@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { Nanum_Pen_Script } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
+import { ThemeProvider } from '@/components/ThemeContext'
+import ThemeSwitcher from '@/components/ThemeSwitcher'
 
-const nanumPenScript = Nanum_Pen_Script({
-  weight: '400',
-  subsets: ['latin'],
+const ogRenaissance = localFont({
+  src: '../public/fonts/OG 르네상스 비밀.ttf',
   display: 'swap',
 })
 
@@ -20,7 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={nanumPenScript.className}>{children}</body>
+      <body className={ogRenaissance.className}>
+        <ThemeProvider>
+          {children}
+          <ThemeSwitcher />
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

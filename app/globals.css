@@ -4,8 +4,178 @@
 
 :root {
   --foreground-rgb: 30, 30, 30;
-  --background-start-rgb: 250, 250, 250;
-  --background-end-rgb: 245, 245, 245;
+  --background-start-rgb: 255, 250, 230;
+  --background-end-rgb: 250, 245, 220;
+}
+
+/* 아날로그 아틀리에 테마 */
+[data-theme="analog-atelier"] {
+  --foreground-rgb: 30, 30, 30;
+  --background-start-rgb: 255, 251, 245;
+  --background-end-rgb: 254, 248, 240;
+  --text-primary: 28, 25, 23;
+  --text-secondary: 120, 53, 15;
+  --accent: 120, 53, 15;
+}
+
+/* 모던 럭셔리 테마 */
+[data-theme="modern-luxury"] {
+  --foreground-rgb: 250, 250, 250;
+  --background-start-rgb: 9, 9, 11;
+  --background-end-rgb: 24, 24, 27;
+  --text-primary: 250, 250, 250;
+  --text-secondary: 212, 175, 55;
+  --accent: 212, 175, 55;
+}
+
+/* 테크니컬 퓨전 테마 */
+[data-theme="technical-fusion"] {
+  --foreground-rgb: 241, 245, 249;
+  --background-start-rgb: 2, 6, 23;
+  --background-end-rgb: 15, 23, 42;
+  --text-primary: 56, 189, 248;
+  --text-secondary: 148, 163, 184;
+  --accent: 6, 182, 212;
+}
+
+/* 오가닉 웜스 테마 */
+[data-theme="organic-warmth"] {
+  --foreground-rgb: 41, 37, 36;
+  --background-start-rgb: 255, 247, 237;
+  --background-end-rgb: 254, 243, 199;
+  --text-primary: 67, 20, 7;
+  --text-secondary: 120, 53, 15;
+  --accent: 234, 88, 12;
+}
+
+/* 디지털 퓨처 테마 */
+[data-theme="digital-future"] {
+  --foreground-rgb: 250, 245, 255;
+  --background-start-rgb: 59, 7, 100;
+  --background-end-rgb: 88, 28, 135;
+  --text-primary: 250, 245, 255;
+  --text-secondary: 216, 180, 254;
+  --accent: 168, 85, 247;
+}
+
+/* 브루탈리즘 테마 */
+[data-theme="brutalist-bold"] {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --text-primary: 255, 255, 255;
+  --text-secondary: 234, 88, 12;
+  --accent: 249, 115, 22;
+}
+
+/* 네오 레트로 테마 */
+[data-theme="neo-retro"] {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 88, 28, 135;
+  --background-end-rgb: 0, 0, 0;
+  --text-primary: 236, 72, 153;
+  --text-secondary: 103, 232, 249;
+  --accent: 236, 72, 153;
+}
+
+/* 선(禪) 미니멀 테마 */
+[data-theme="zen-minimal"] {
+  --foreground-rgb: 28, 25, 23;
+  --background-start-rgb: 250, 250, 249;
+  --background-end-rgb: 255, 255, 255;
+  --text-primary: 28, 25, 23;
+  --text-secondary: 87, 83, 78;
+  --accent: 41, 37, 36;
+}
+
+/* 에디토리얼 모노 테마 */
+[data-theme="editorial-mono"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 250, 250, 250;
+  --text-primary: 0, 0, 0;
+  --text-secondary: 82, 82, 82;
+  --accent: 0, 0, 0;
+}
+
+/* 키네틱 에너지 테마 */
+[data-theme="kinetic-energy"] {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 20, 20, 20;
+  --text-primary: 217, 249, 157;
+  --text-secondary: 163, 230, 53;
+  --accent: 132, 204, 22;
+}
+
+/* 노르딕 캄 테마 */
+[data-theme="nordic-calm"] {
+  --foreground-rgb: 30, 41, 59;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 239, 246, 255;
+  --text-primary: 30, 41, 59;
+  --text-secondary: 100, 116, 139;
+  --accent: 71, 85, 105;
+}
+
+/* 맥시멀리스트 페스티벌 테마 */
+[data-theme="maximalist-festival"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 241, 242;
+  --background-end-rgb: 254, 249, 195;
+  --text-primary: 0, 0, 0;
+  --text-secondary: 219, 39, 119;
+  --accent: 168, 85, 247;
+}
+
+/* 메디테라니안 시크 테마 */
+[data-theme="mediterranean-chic"] {
+  --foreground-rgb: 120, 53, 15;
+  --background-start-rgb: 255, 251, 235;
+  --background-end-rgb: 254, 243, 199;
+  --text-primary: 120, 53, 15;
+  --text-secondary: 234, 88, 12;
+  --accent: 234, 88, 12;
+}
+
+/* 스플릿 스크린 테마 */
+[data-theme="split-screen"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 255, 255, 255;
+  --text-primary: 255, 255, 255;
+  --text-secondary: 168, 85, 247;
+  --accent: 168, 85, 247;
+}
+
+/* 서큘러 플로우 테마 */
+[data-theme="circular-flow"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 249, 250, 251;
+  --background-end-rgb: 243, 244, 246;
+  --text-primary: 17, 24, 39;
+  --text-secondary: 16, 185, 129;
+  --accent: 20, 184, 166;
+}
+
+/* 다이아고날 다이나믹 테마 */
+[data-theme="diagonal-dynamic"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 254, 252, 232;
+  --background-end-rgb: 254, 243, 199;
+  --text-primary: 0, 0, 0;
+  --text-secondary: 249, 115, 22;
+  --accent: 234, 88, 12;
+}
+
+/* 오버랩 카오스 테마 */
+[data-theme="overlap-chaos"] {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 245, 245, 245;
+  --background-end-rgb: 229, 229, 229;
+  --text-primary: 0, 0, 0;
+  --text-secondary: 239, 68, 68;
+  --accent: 59, 130, 246;
 }
 
 * {
@@ -28,6 +198,283 @@ body {
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* 아날로그 아틀리에 배경 효과 */
+[data-theme="analog-atelier"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(3deg, transparent, transparent 1px, rgba(139, 69, 19, 0.015) 1px, rgba(139, 69, 19, 0.015) 2px),
+    repeating-linear-gradient(93deg, transparent, transparent 1px, rgba(139, 69, 19, 0.015) 1px, rgba(139, 69, 19, 0.015) 2px),
+    repeating-linear-gradient(45deg, rgba(160, 82, 45, 0.01) 0px, rgba(160, 82, 45, 0.01) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(135deg, rgba(139, 69, 19, 0.01) 0px, rgba(139, 69, 19, 0.01) 1px, transparent 1px, transparent 3px);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="analog-atelier"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(ellipse at 15% 25%, rgba(210, 180, 140, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 85% 15%, rgba(205, 170, 125, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 75% 65%, rgba(222, 184, 135, 0.18) 0%, transparent 38%),
+    radial-gradient(ellipse at 25% 75%, rgba(188, 143, 143, 0.1) 0%, transparent 42%),
+    linear-gradient(125deg, rgba(210, 180, 140, 0.05) 0%, transparent 15%, rgba(195, 165, 130, 0.08) 30%, transparent 45%);
+  pointer-events: none;
+  z-index: -1;
+  mix-blend-mode: multiply;
+}
+
+/* 모던 럭셔리 배경 효과 */
+[data-theme="modern-luxury"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0, 0, 0, 0.01) 50px, rgba(0, 0, 0, 0.01) 51px);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="modern-luxury"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 테크니컬 퓨전 배경 효과 */
+[data-theme="technical-fusion"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="technical-fusion"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(255, 255, 255, 0.01) 100px, rgba(255, 255, 255, 0.01) 101px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 오가닉 웜스 배경 효과 */
+[data-theme="organic-warmth"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(ellipse at 30% 40%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="organic-warmth"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(10deg, transparent, transparent 2px, rgba(234, 88, 12, 0.02) 2px, rgba(234, 88, 12, 0.02) 4px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 디지털 퓨처 배경 효과 */
+[data-theme="digital-future"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="digital-future"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, transparent 50%, rgba(236, 72, 153, 0.05) 100%);
+  pointer-events: none;
+  z-index: -1;
+  mix-blend-mode: overlay;
+}
+
+/* 에디토리얼 모노 배경 효과 */
+[data-theme="editorial-mono"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 99px, rgba(0, 0, 0, 0.02) 99px, rgba(0, 0, 0, 0.02) 100px),
+    repeating-linear-gradient(0deg, transparent, transparent 99px, rgba(0, 0, 0, 0.02) 99px, rgba(0, 0, 0, 0.02) 100px);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 키네틱 에너지 배경 효과 */
+[data-theme="kinetic-energy"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(132, 204, 22, 0.03) 2px, rgba(132, 204, 22, 0.03) 4px),
+    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(132, 204, 22, 0.02) 2px, rgba(132, 204, 22, 0.02) 4px);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="kinetic-energy"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(132, 204, 22, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(163, 230, 53, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 노르딕 캄 배경 효과 */
+[data-theme="nordic-calm"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(148, 163, 184, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(100, 116, 139, 0.06) 0%, transparent 50%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 맥시멀리스트 페스티벌 배경 효과 */
+[data-theme="maximalist-festival"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 50% 70%, rgba(251, 146, 60, 0.08) 0%, transparent 40%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="maximalist-festival"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(125deg, rgba(236, 72, 153, 0.05) 0%, transparent 30%, rgba(168, 85, 247, 0.05) 60%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+  mix-blend-mode: overlay;
+}
+
+/* 메디테라니안 시크 배경 효과 */
+[data-theme="mediterranean-chic"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(251, 146, 60, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(239, 68, 68, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(251, 191, 36, 0.1) 0%, transparent 60%);
+  opacity: 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="mediterranean-chic"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(5deg, transparent, transparent 3px, rgba(234, 88, 12, 0.015) 3px, rgba(234, 88, 12, 0.015) 6px),
+    repeating-linear-gradient(95deg, transparent, transparent 3px, rgba(234, 88, 12, 0.015) 3px, rgba(234, 88, 12, 0.015) 6px);
+  pointer-events: none;
+  z-index: -1;
 }
 
 a {
@@ -38,6 +485,38 @@ a {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .text-theme-primary {
+    color: rgb(var(--text-primary));
+  }
+
+  .text-theme-secondary {
+    color: rgb(var(--text-secondary));
+  }
+
+  .text-theme-accent {
+    color: rgb(var(--accent));
+  }
+
+  .bg-theme-accent {
+    background-color: rgb(var(--accent));
+  }
+
+  .border-theme-accent {
+    border-color: rgb(var(--accent));
+  }
+
+  .border-theme-accent-20 {
+    border-color: rgba(var(--accent), 0.2);
+  }
+
+  .border-theme-accent-30 {
+    border-color: rgba(var(--accent), 0.3);
+  }
+
+  .bg-theme-accent-5 {
+    background-color: rgba(var(--accent), 0.05);
   }
 
   .glass-effect {
