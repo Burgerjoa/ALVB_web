@@ -347,18 +347,20 @@ export default function Portfolio() {
       : artworks.filter((art) => art.category === selectedCategory)
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900">
+      <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center">
-            <span className="text-xs font-medium tracking-[0.3em] text-gray-500 uppercase">Our Works</span>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 mt-4 tracking-tight">
+            <div className="mb-6 inline-block">
+              <span className="text-xs font-medium tracking-[0.3em] text-theme-secondary uppercase">Our Works</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-[1.1] tracking-tight text-theme-primary">
               Portfolio
             </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light">
+            <p className="text-lg md:text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed font-light">
               ALVB가 완성한 다양한 상업공간 프로젝트를 확인해보세요
             </p>
           </div>
@@ -369,8 +371,8 @@ export default function Portfolio() {
               onClick={() => setActiveTab('references')}
               className={`px-8 py-3 text-sm font-medium tracking-wide transition-all duration-300 ${
                 activeTab === 'references'
-                  ? 'bg-white text-black'
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+                  ? 'bg-theme-accent text-white'
+                  : 'border-2 border-theme-accent-20 text-theme-secondary hover:border-theme-accent-30 bg-theme-accent-5'
               }`}
             >
               REFERENCES
@@ -379,8 +381,8 @@ export default function Portfolio() {
               onClick={() => setActiveTab('artwork')}
               className={`px-8 py-3 text-sm font-medium tracking-wide transition-all duration-300 ${
                 activeTab === 'artwork'
-                  ? 'bg-white text-black'
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+                  ? 'bg-theme-accent text-white'
+                  : 'border-2 border-theme-accent-20 text-theme-secondary hover:border-theme-accent-30 bg-theme-accent-5'
               }`}
             >
               ARTWORK
@@ -390,7 +392,7 @@ export default function Portfolio() {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 bg-zinc-900 border-b border-white/5">
+      <section className="relative py-8 border-t border-b border-theme-accent-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (
@@ -399,8 +401,8 @@ export default function Portfolio() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-6 py-2 text-sm font-medium tracking-wide transition-all duration-300 ${
                   selectedCategory === category
-                    ? 'bg-white text-black'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+                    ? 'bg-theme-accent text-white'
+                    : 'border-2 border-theme-accent-20 text-theme-secondary hover:border-theme-accent-30 bg-theme-accent-5'
                 }`}
               >
                 {category}
@@ -412,7 +414,7 @@ export default function Portfolio() {
 
       {/* References Section */}
       {activeTab === 'references' && (
-        <section className="py-20 bg-zinc-900">
+        <section className="relative py-20">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {filteredReferences.map((project) => (
@@ -422,7 +424,7 @@ export default function Portfolio() {
                     setSelectedProject(project)
                     setCurrentImageIndex(0)
                   }}
-                  className="group bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden cursor-pointer"
+                  className="group border-2 border-theme-accent-20 hover:border-theme-accent-30 transition-all duration-500 overflow-hidden cursor-pointer bg-theme-accent-5 backdrop-blur-sm"
                 >
                   <div className="relative overflow-hidden h-80">
                     <img
@@ -440,26 +442,26 @@ export default function Portfolio() {
                     </div>
                   </div>
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">
+                    <h3 className="text-2xl font-bold mb-3 text-theme-primary tracking-tight">
                       {project.title}
                     </h3>
-                    <p className="text-gray-400 mb-6 leading-relaxed font-light">{project.description}</p>
+                    <p className="text-theme-secondary mb-6 leading-relaxed font-light">{project.description}</p>
 
-                    <div className="space-y-2 text-sm text-gray-500 mb-6 pb-6 border-b border-white/10">
+                    <div className="space-y-2 text-sm text-theme-secondary mb-6 pb-6 border-b border-theme-accent-20">
                       <p className="flex items-center gap-2">
-                        <span className="text-white/40">📍</span> {project.location}
+                        <span className="opacity-60">📍</span> {project.location}
                       </p>
                       <p className="flex items-center gap-2">
-                        <span className="text-white/40">📐</span> {project.area}
+                        <span className="opacity-60">📐</span> {project.area}
                       </p>
                       <p className="flex items-center gap-2">
-                        <span className="text-white/40">📅</span> {project.year}
+                        <span className="opacity-60">📅</span> {project.year}
                       </p>
                     </div>
 
-                    <div className="bg-white/[0.03] border border-white/5 p-6">
-                      <p className="text-gray-400 italic leading-relaxed mb-3">"{project.review}"</p>
-                      <p className="text-gray-500 text-sm">- {project.client}</p>
+                    <div className="border-2 border-theme-accent-20 bg-theme-accent-5 p-6">
+                      <p className="text-theme-secondary italic leading-relaxed mb-3">"{project.review}"</p>
+                      <p className="text-theme-secondary text-sm opacity-75">- {project.client}</p>
                     </div>
                   </div>
                 </div>
@@ -471,13 +473,13 @@ export default function Portfolio() {
 
       {/* Artwork Section */}
       {activeTab === 'artwork' && (
-        <section className="py-20 bg-zinc-900">
+        <section className="relative py-20">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredArtworks.map((artwork) => (
                 <div
                   key={artwork.id}
-                  className="group relative overflow-hidden aspect-square bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300"
+                  className="group relative overflow-hidden aspect-square border-2 border-theme-accent-20 hover:border-theme-accent-30 transition-all duration-300 bg-theme-accent-5"
                 >
                   <img
                     src={artwork.image}
@@ -495,18 +497,18 @@ export default function Portfolio() {
       )}
 
       {/* CTA Section */}
-      <section className="relative py-32 bg-zinc-900 border-t border-white/5">
+      <section className="relative py-32 border-t border-theme-accent-20" style={{backgroundColor: 'rgba(var(--accent), 0.03)'}}>
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <span className="text-xs font-medium tracking-[0.3em] text-gray-500 uppercase block mb-6">Get Started</span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">
+          <span className="text-xs font-medium tracking-[0.3em] text-theme-secondary uppercase block mb-6">Get Started</span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-theme-primary tracking-tight">
             당신의 공간도 특별하게 만들어보세요
           </h2>
-          <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto font-light">
+          <p className="text-lg text-theme-secondary mb-12 max-w-2xl mx-auto font-light">
             지금 바로 무료 견적을 신청하세요
           </p>
           <a
             href="/quote"
-            className="inline-block bg-white text-black px-10 py-4 text-sm font-medium tracking-wide hover:bg-gray-200 transition-all duration-300"
+            className="inline-block bg-theme-accent text-white px-10 py-4 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
           >
             START PROJECT
           </a>
@@ -520,13 +522,14 @@ export default function Portfolio() {
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="bg-zinc-900 border border-white/20 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative animate-slideUp"
+            className="border-2 border-theme-accent-20 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative animate-slideUp"
+            style={{backgroundColor: 'rgba(var(--background-start-rgb), 0.98)'}}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-6 right-6 z-10 text-white hover:text-gray-300 transition-colors bg-black/50 backdrop-blur-sm w-10 h-10 flex items-center justify-center"
+              className="absolute top-6 right-6 z-10 text-theme-primary hover:opacity-70 transition-opacity bg-theme-accent-5 backdrop-blur-sm w-10 h-10 flex items-center justify-center border-2 border-theme-accent-20"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -582,77 +585,77 @@ export default function Portfolio() {
               {/* Header */}
               <div className="mb-8">
                 <div className="flex items-center gap-4 mb-4">
-                  <span className="bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide text-white border border-white/20">
+                  <span className="bg-theme-accent text-white px-4 py-1.5 text-xs font-medium tracking-wide">
                     {selectedProject.category}
                   </span>
-                  <span className="text-gray-500 text-sm">{selectedProject.year}</span>
+                  <span className="text-theme-secondary text-sm">{selectedProject.year}</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                <h2 className="text-4xl md:text-5xl font-bold text-theme-primary mb-4 tracking-tight">
                   {selectedProject.title}
                 </h2>
-                <p className="text-xl text-gray-400 font-light">{selectedProject.description}</p>
+                <p className="text-xl text-theme-secondary font-light">{selectedProject.description}</p>
               </div>
 
               {/* Project Info Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 pb-12 border-b border-white/10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 pb-12 border-b border-theme-accent-20">
                 <div>
-                  <div className="text-gray-500 text-sm mb-2">위치</div>
-                  <div className="text-white font-medium">{selectedProject.location}</div>
+                  <div className="text-theme-secondary text-sm mb-2">위치</div>
+                  <div className="text-theme-primary font-medium">{selectedProject.location}</div>
                 </div>
                 <div>
-                  <div className="text-gray-500 text-sm mb-2">면적</div>
-                  <div className="text-white font-medium">{selectedProject.area}</div>
+                  <div className="text-theme-secondary text-sm mb-2">면적</div>
+                  <div className="text-theme-primary font-medium">{selectedProject.area}</div>
                 </div>
                 <div>
-                  <div className="text-gray-500 text-sm mb-2">기간</div>
-                  <div className="text-white font-medium">{selectedProject.projectDetails.duration}</div>
+                  <div className="text-theme-secondary text-sm mb-2">기간</div>
+                  <div className="text-theme-primary font-medium">{selectedProject.projectDetails.duration}</div>
                 </div>
                 <div>
-                  <div className="text-gray-500 text-sm mb-2">예산</div>
-                  <div className="text-white font-medium">{selectedProject.projectDetails.budget}</div>
+                  <div className="text-theme-secondary text-sm mb-2">예산</div>
+                  <div className="text-theme-primary font-medium">{selectedProject.projectDetails.budget}</div>
                 </div>
               </div>
 
               {/* Challenges & Solutions */}
-              <div className="mb-12 pb-12 border-b border-white/10">
-                <h3 className="text-2xl font-bold text-white mb-6 tracking-tight">프로젝트 개요</h3>
+              <div className="mb-12 pb-12 border-b border-theme-accent-20">
+                <h3 className="text-2xl font-bold text-theme-primary mb-6 tracking-tight">프로젝트 개요</h3>
                 <div className="space-y-6">
                   <div>
-                    <div className="text-sm font-medium text-gray-400 mb-2">과제</div>
-                    <p className="text-gray-300 leading-relaxed">{selectedProject.projectDetails.challenges}</p>
+                    <div className="text-sm font-medium text-theme-secondary mb-2">과제</div>
+                    <p className="text-theme-secondary leading-relaxed">{selectedProject.projectDetails.challenges}</p>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-400 mb-2">솔루션</div>
-                    <p className="text-gray-300 leading-relaxed">{selectedProject.projectDetails.solutions}</p>
+                    <div className="text-sm font-medium text-theme-secondary mb-2">솔루션</div>
+                    <p className="text-theme-secondary leading-relaxed">{selectedProject.projectDetails.solutions}</p>
                   </div>
                 </div>
               </div>
 
               {/* Detailed Review */}
               <div className="mb-12">
-                <h3 className="text-2xl font-bold text-white mb-6 tracking-tight">작업 후기</h3>
-                <div className="bg-white/[0.03] border border-white/10 p-8">
-                  <div className="text-gray-300 leading-relaxed whitespace-pre-line mb-6 italic">
+                <h3 className="text-2xl font-bold text-theme-primary mb-6 tracking-tight">작업 후기</h3>
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 p-8">
+                  <div className="text-theme-secondary leading-relaxed whitespace-pre-line mb-6 italic">
                     {selectedProject.detailedReview}
                   </div>
-                  <div className="flex items-center gap-3 pt-6 border-t border-white/10">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
+                  <div className="flex items-center gap-3 pt-6 border-t border-theme-accent-20">
+                    <div className="w-12 h-12 bg-theme-accent rounded-full flex items-center justify-center">
                       <span className="text-white text-lg">📝</span>
                     </div>
                     <div>
-                      <div className="text-white font-medium">{selectedProject.client}</div>
-                      <div className="text-gray-500 text-sm">{selectedProject.title}</div>
+                      <div className="text-theme-primary font-medium">{selectedProject.client}</div>
+                      <div className="text-theme-secondary text-sm">{selectedProject.title}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* CTA */}
-              <div className="text-center pt-8 border-t border-white/10">
-                <p className="text-gray-400 mb-6">비슷한 프로젝트를 진행하고 싶으신가요?</p>
+              <div className="text-center pt-8 border-t border-theme-accent-20">
+                <p className="text-theme-secondary mb-6">비슷한 프로젝트를 진행하고 싶으신가요?</p>
                 <a
                   href="/quote"
-                  className="inline-block bg-white text-black px-10 py-4 text-sm font-medium tracking-wide hover:bg-gray-200 transition-all duration-300"
+                  className="inline-block bg-theme-accent text-white px-10 py-4 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
                 >
                   무료 견적 받기
                 </a>
