@@ -7,19 +7,21 @@ import Footer from '@/components/Footer'
 interface QuoteData {
   id: string
   name: string
-  phone: string
-  email: string
-  businessType: string
-  projectType: string
+  phone?: string
+  email?: string
+  business_type: string
+  project_type: string
   area: string
   budget: string
   location: string
-  preferredDate: string
-  preferredTime: string
+  preferred_date?: string
+  preferred_time?: string
   message: string
-  createdAt: string
-  updatedAt: string
+  created_at: string
+  updated_at: string
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export default function Quote() {
   const [view, setView] = useState<'list' | 'create' | 'detail'>('list')
@@ -32,13 +34,13 @@ export default function Quote() {
     name: '',
     phone: '',
     email: '',
-    businessType: '',
-    projectType: '',
+    business_type: '',
+    project_type: '',
     area: '',
     budget: '',
     location: '',
-    preferredDate: '',
-    preferredTime: '',
+    preferred_date: '',
+    preferred_time: '',
     message: '',
   })
 
@@ -50,7 +52,7 @@ export default function Quote() {
   const fetchQuotes = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/quotes')
+      const response = await fetch(`${API_URL}/api/quotes`)
       if (response.ok) {
         const data = await response.json()
         setQuotes(data)
@@ -78,10 +80,10 @@ export default function Quote() {
     try {
       if (isEditing && selectedQuote) {
         // 수정
-        const response = await fetch('/api/quotes', {
+        const response = await fetch(`${API_URL}/api/quotes/${selectedQuote.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...formData, id: selectedQuote.id }),
+          body: JSON.stringify(formData),
         })
 
         if (response.ok) {
@@ -90,7 +92,7 @@ export default function Quote() {
         }
       } else {
         // 새로 작성
-        const response = await fetch('/api/quotes', {
+        const response = await fetch(`${API_URL}/api/quotes`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
@@ -107,13 +109,13 @@ export default function Quote() {
         name: '',
         phone: '',
         email: '',
-        businessType: '',
-        projectType: '',
+        business_type: '',
+        project_type: '',
         area: '',
         budget: '',
         location: '',
-        preferredDate: '',
-        preferredTime: '',
+        preferred_date: '',
+        preferred_time: '',
         message: '',
       })
       setIsEditing(false)
@@ -128,15 +130,15 @@ export default function Quote() {
   const handleEdit = (quote: QuoteData) => {
     setFormData({
       name: quote.name,
-      phone: quote.phone,
-      email: quote.email,
-      businessType: quote.businessType,
-      projectType: quote.projectType,
+      phone: quote.phone || '',
+      email: quote.email || '',
+      business_type: quote.business_type,
+      project_type: quote.project_type,
       area: quote.area,
       budget: quote.budget,
       location: quote.location,
-      preferredDate: quote.preferredDate,
-      preferredTime: quote.preferredTime,
+      preferred_date: quote.preferred_date || '',
+      preferred_time: quote.preferred_time || '',
       message: quote.message,
     })
     setSelectedQuote(quote)
@@ -147,7 +149,7 @@ export default function Quote() {
   const handleDelete = async (id: string) => {
     if (confirm('정말 삭제하시겠습니까?')) {
       try {
-        const response = await fetch(`/api/quotes?id=${id}`, {
+        const response = await fetch(`${API_URL}/api/quotes/${id}`, {
           method: 'DELETE',
         })
 
@@ -228,13 +230,13 @@ export default function Quote() {
                       name: '',
                       phone: '',
                       email: '',
-                      businessType: '',
-                      projectType: '',
+                      business_type: '',
+                      project_type: '',
                       area: '',
                       budget: '',
                       location: '',
-                      preferredDate: '',
-                      preferredTime: '',
+                      preferred_date: '',
+                      preferred_time: '',
                       message: '',
                     })
                     setView('create')
@@ -280,12 +282,12 @@ export default function Quote() {
                         </div>
                         <div className="col-span-2">
                           <span className="bg-theme-accent text-white px-3 py-1 text-xs font-medium tracking-wide">
-                            {quote.businessType}
+                            {quote.business_type}
                           </span>
                         </div>
                         <div className="col-span-4">
                           <h3 className="text-base font-bold text-theme-primary tracking-tight group-hover:text-theme-accent transition-colors">
-                            {quote.projectType} - {quote.name}님의 {quote.businessType} 인테리어
+                            {quote.project_type} - {quote.name}님의 {quote.business_type} 인테리어
                           </h3>
                         </div>
                         <div className="col-span-2 text-theme-secondary text-sm">
@@ -295,7 +297,7 @@ export default function Quote() {
                           {quote.area}
                         </div>
                         <div className="col-span-1 text-center text-theme-secondary text-xs">
-                          {formatDateShort(quote.createdAt)}
+                          {formatDateShort(quote.created_at)}
                         </div>
                       </div>
 
@@ -305,15 +307,15 @@ export default function Quote() {
                           <div className="flex items-center gap-2">
                             <span className="text-theme-secondary text-sm">#{quotes.length - index}</span>
                             <span className="bg-theme-accent text-white px-2 py-0.5 text-xs font-medium tracking-wide">
-                              {quote.businessType}
+                              {quote.business_type}
                             </span>
                           </div>
                           <span className="text-theme-secondary text-xs">
-                            {formatDateShort(quote.createdAt)}
+                            {formatDateShort(quote.created_at)}
                           </span>
                         </div>
                         <h3 className="text-base font-bold text-theme-primary tracking-tight mb-2">
-                          {quote.projectType} - {quote.name}님의 {quote.businessType} 인테리어
+                          {quote.project_type} - {quote.name}님의 {quote.business_type} 인테리어
                         </h3>
                         <div className="flex gap-4 text-theme-secondary text-sm">
                           <span>📍 {quote.location}</span>
@@ -402,14 +404,14 @@ export default function Quote() {
                   <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">프로젝트 정보</h3>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="businessType" className="block text-sm font-medium text-theme-secondary mb-2">
+                      <label htmlFor="business_type" className="block text-sm font-medium text-theme-secondary mb-2">
                         업종 *
                       </label>
                       <select
-                        id="businessType"
-                        name="businessType"
+                        id="business_type"
+                        name="business_type"
                         required
-                        value={formData.businessType}
+                        value={formData.business_type}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       >
@@ -424,14 +426,14 @@ export default function Quote() {
                     </div>
 
                     <div>
-                      <label htmlFor="projectType" className="block text-sm font-medium text-theme-secondary mb-2">
+                      <label htmlFor="project_type" className="block text-sm font-medium text-theme-secondary mb-2">
                         인테리어 범위 *
                       </label>
                       <select
-                        id="projectType"
-                        name="projectType"
+                        id="project_type"
+                        name="project_type"
                         required
-                        value={formData.projectType}
+                        value={formData.project_type}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       >
@@ -502,27 +504,27 @@ export default function Quote() {
                   <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">미팅 희망 일정</h3>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="preferredDate" className="block text-sm font-medium text-theme-secondary mb-2">
+                      <label htmlFor="preferred_date" className="block text-sm font-medium text-theme-secondary mb-2">
                         희망 날짜
                       </label>
                       <input
                         type="date"
-                        id="preferredDate"
-                        name="preferredDate"
-                        value={formData.preferredDate}
+                        id="preferred_date"
+                        name="preferred_date"
+                        value={formData.preferred_date}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="preferredTime" className="block text-sm font-medium text-theme-secondary mb-2">
+                      <label htmlFor="preferred_time" className="block text-sm font-medium text-theme-secondary mb-2">
                         희망 시간
                       </label>
                       <select
-                        id="preferredTime"
-                        name="preferredTime"
-                        value={formData.preferredTime}
+                        id="preferred_time"
+                        name="preferred_time"
+                        value={formData.preferred_time}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       >
@@ -613,18 +615,18 @@ export default function Quote() {
                       {selectedQuote.name}님의 견적 신청
                     </h3>
                     <span className="bg-theme-accent text-white px-4 py-1.5 text-sm font-medium tracking-wide">
-                      {selectedQuote.businessType}
+                      {selectedQuote.business_type}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-theme-secondary">
                     <div>
                       <p className="text-sm opacity-75 mb-1">작성일</p>
-                      <p className="font-medium">{formatDate(selectedQuote.createdAt)}</p>
+                      <p className="font-medium">{formatDate(selectedQuote.created_at)}</p>
                     </div>
-                    {selectedQuote.updatedAt !== selectedQuote.createdAt && (
+                    {selectedQuote.updated_at !== selectedQuote.created_at && (
                       <div>
                         <p className="text-sm opacity-75 mb-1">수정일</p>
-                        <p className="font-medium">{formatDate(selectedQuote.updatedAt)}</p>
+                        <p className="font-medium">{formatDate(selectedQuote.updated_at)}</p>
                       </div>
                     )}
                   </div>
@@ -634,8 +636,8 @@ export default function Quote() {
                 <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
                   <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">연락처 정보</h4>
                   <div className="space-y-3 text-theme-secondary">
-                    <p><span className="opacity-75">📧 이메일:</span> {selectedQuote.email}</p>
-                    <p><span className="opacity-75">📞 연락처:</span> {selectedQuote.phone}</p>
+                    {selectedQuote.email && <p><span className="opacity-75">📧 이메일:</span> {selectedQuote.email}</p>}
+                    {selectedQuote.phone && <p><span className="opacity-75">📞 연락처:</span> {selectedQuote.phone}</p>}
                   </div>
                 </div>
 
@@ -645,7 +647,7 @@ export default function Quote() {
                   <div className="grid grid-cols-2 gap-4 text-theme-secondary">
                     <div>
                       <p className="text-sm opacity-75 mb-1">인테리어 범위</p>
-                      <p className="font-medium">{selectedQuote.projectType}</p>
+                      <p className="font-medium">{selectedQuote.project_type}</p>
                     </div>
                     <div>
                       <p className="text-sm opacity-75 mb-1">평수</p>
@@ -663,20 +665,20 @@ export default function Quote() {
                 </div>
 
                 {/* Meeting Schedule */}
-                {(selectedQuote.preferredDate || selectedQuote.preferredTime) && (
+                {(selectedQuote.preferred_date || selectedQuote.preferred_time) && (
                   <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
                     <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">미팅 희망 일정</h4>
                     <div className="grid grid-cols-2 gap-4 text-theme-secondary">
-                      {selectedQuote.preferredDate && (
+                      {selectedQuote.preferred_date && (
                         <div>
                           <p className="text-sm opacity-75 mb-1">희망 날짜</p>
-                          <p className="font-medium">{selectedQuote.preferredDate}</p>
+                          <p className="font-medium">{selectedQuote.preferred_date}</p>
                         </div>
                       )}
-                      {selectedQuote.preferredTime && (
+                      {selectedQuote.preferred_time && (
                         <div>
                           <p className="text-sm opacity-75 mb-1">희망 시간</p>
-                          <p className="font-medium">{selectedQuote.preferredTime}</p>
+                          <p className="font-medium">{selectedQuote.preferred_time}</p>
                         </div>
                       )}
                     </div>
