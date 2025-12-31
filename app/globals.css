@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* OG 르네상스 폰트 - 영어, 숫자, 기호용 */
+@font-face {
+  font-family: 'OG Renaissance';
+  src: url('/fonts/OG 르네상스 비밀.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+0020-007F, U+00A0-00FF, U+0100-017F, U+0180-024F, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F, U+2150-218F, U+2190-21FF, U+2200-22FF;
+}
+
+/* 고딕체 - 한글용 */
+@font-face {
+  font-family: 'Korean Gothic';
+  src: local('Apple SD Gothic Neo'), local('AppleSDGothicNeo-Regular'), local('Malgun Gothic'), local('MalgunGothic');
+  font-display: swap;
+  unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+}
+
 :root {
   --foreground-rgb: 30, 30, 30;
   --background-start-rgb: 255, 250, 230;
@@ -194,7 +210,7 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
-  font-family: var(--font-og-renaissance), var(--font-korean-gothic), system-ui, -apple-system, sans-serif;
+  font-family: 'OG Renaissance', 'Korean Gothic', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'cv11', 'ss01';
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
