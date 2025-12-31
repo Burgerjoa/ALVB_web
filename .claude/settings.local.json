@@ -10,7 +10,10 @@
       "Bash(cmd /c \"if not exist public\\fonts mkdir public\\fonts\")",
       "Bash(cmd /c \"move \"\"OG 르네상스 비밀.ttf\"\" public\\fonts\"\")",
       "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path public\\fonts; Move-Item -Path ''OG 르네상스 비밀.ttf'' -Destination public\\fonts\\ -Force\")",
-      "Bash(vercel --version:*)"
+      "Bash(vercel --version:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(vercel:*)"
     ]
   }
 }

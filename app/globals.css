@@ -194,6 +194,7 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
+  font-family: var(--font-og-renaissance), var(--font-korean-gothic), system-ui, -apple-system, sans-serif;
   font-feature-settings: 'cv11', 'ss01';
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
