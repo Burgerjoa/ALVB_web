@@ -83,13 +83,16 @@ export default function Quote() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+      <section className="relative pt-32 pb-20 overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="mb-6 inline-block">
+              <span className="text-xs font-medium tracking-[0.3em] uppercase text-theme-secondary">Get Started</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-[1.1] tracking-tight text-theme-primary">
               온라인 견적
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed font-light">
               간단한 정보만 입력하시면 24시간 내로 상세한 견적을 보내드립니다
             </p>
           </div>
@@ -97,26 +100,26 @@ export default function Quote() {
       </section>
 
       {/* Form Section */}
-      <section className="py-16 bg-white">
+      <section className="relative py-16 border-t border-theme-accent-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {isSubmitted ? (
-            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-12 text-center">
+            <div className="border-2 border-theme-accent bg-theme-accent-5 rounded-xl p-12 text-center">
               <div className="text-6xl mb-4">✓</div>
-              <h2 className="text-3xl font-bold mb-4 text-gray-900">
+              <h2 className="text-3xl font-bold mb-4 text-theme-primary tracking-tight">
                 견적 신청이 완료되었습니다
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-theme-secondary font-light">
                 24시간 내로 담당자가 연락드리겠습니다
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Contact Info */}
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">연락처 정보</h2>
+              <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-theme-primary tracking-tight">연락처 정보</h2>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-theme-secondary mb-2">
                       이름 *
                     </label>
                     <input
@@ -126,13 +129,13 @@ export default function Quote() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       placeholder="홍길동"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-theme-secondary mb-2">
                       연락처 *
                     </label>
                     <input
@@ -142,7 +145,7 @@ export default function Quote() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
                       placeholder="010-1234-5678"
                     />
                   </div>
@@ -450,29 +453,29 @@ export default function Quote() {
       </section>
 
       {/* Info Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="relative py-32 border-t border-theme-accent-20" style={{backgroundColor: 'rgba(var(--accent), 0.03)'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+            <div className="group relative p-8 border-2 border-theme-accent-20 hover:border-theme-accent-30 transition-all duration-500 bg-theme-accent-5 backdrop-blur-sm text-center">
               <div className="text-5xl mb-4">⚡</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">빠른 답변</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-3 text-theme-primary tracking-tight">빠른 답변</h3>
+              <p className="text-theme-secondary leading-relaxed font-light">
                 24시간 내 상세한 견적서를 보내드립니다
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+            <div className="group relative p-8 border-2 border-theme-accent-20 hover:border-theme-accent-30 transition-all duration-500 bg-theme-accent-5 backdrop-blur-sm text-center">
               <div className="text-5xl mb-4">💰</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">무료 견적</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-3 text-theme-primary tracking-tight">무료 견적</h3>
+              <p className="text-theme-secondary leading-relaxed font-light">
                 견적 및 초기 상담은 완전 무료입니다
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl text-center shadow-md">
+            <div className="group relative p-8 border-2 border-theme-accent-20 hover:border-theme-accent-30 transition-all duration-500 bg-theme-accent-5 backdrop-blur-sm text-center">
               <div className="text-5xl mb-4">👨‍💼</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">전문 상담</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-3 text-theme-primary tracking-tight">전문 상담</h3>
+              <p className="text-theme-secondary leading-relaxed font-light">
                 경험 많은 전문가가 직접 상담해드립니다
               </p>
             </div>
