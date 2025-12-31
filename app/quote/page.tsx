@@ -1,10 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
+interface QuoteData {
+  id: string
+  name: string
+  phone: string
+  email: string
+  businessType: string
+  projectType: string
+  area: string
+  budget: string
+  location: string
+  preferredDate: string
+  preferredTime: string
+  message: string
+  createdAt: string
+  updatedAt: string
+}
+
 export default function Quote() {
+  const [view, setView] = useState<'list' | 'create' | 'detail'>('list')
+  const [quotes, setQuotes] = useState<QuoteData[]>([])
+  const [selectedQuote, setSelectedQuote] = useState<QuoteData | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -19,9 +41,19 @@ export default function Quote() {
     message: '',
   })
 
-  const [attachments, setAttachments] = useState<File[]>([])
+  // 로컬 스토리지에서 견적 목록 불러오기
+  useEffect(() => {
+    const savedQuotes = localStorage.getItem('quotes')
+    if (savedQuotes) {
+      setQuotes(JSON.parse(savedQuotes))
+    }
+  }, [])
 
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  // 로컬 스토리지에 견적 목록 저장
+  const saveQuotes = (newQuotes: QuoteData[]) => {
+    localStorage.setItem('quotes', JSON.stringify(newQuotes))
+    setQuotes(newQuotes)
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -33,49 +65,91 @@ export default function Quote() {
     }))
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      const newFiles = Array.from(files)
-      setAttachments((prev) => [...prev, ...newFiles])
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (isEditing && selectedQuote) {
+      // 수정
+      const updatedQuotes = quotes.map(q =>
+        q.id === selectedQuote.id
+          ? { ...formData, id: selectedQuote.id, createdAt: selectedQuote.createdAt, updatedAt: new Date().toISOString() }
+          : q
+      )
+      saveQuotes(updatedQuotes)
+      alert('견적이 수정되었습니다.')
+    } else {
+      // 새로 작성
+      const newQuote: QuoteData = {
+        ...formData,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      saveQuotes([newQuote, ...quotes])
+      alert('견적이 등록되었습니다.')
+    }
+
+    // 초기화
+    setFormData({
+      name: '',
+      phone: '',
+      email: '',
+      businessType: '',
+      projectType: '',
+      area: '',
+      budget: '',
+      location: '',
+      preferredDate: '',
+      preferredTime: '',
+      message: '',
+    })
+    setIsEditing(false)
+    setSelectedQuote(null)
+    setView('list')
+  }
+
+  const handleEdit = (quote: QuoteData) => {
+    setFormData({
+      name: quote.name,
+      phone: quote.phone,
+      email: quote.email,
+      businessType: quote.businessType,
+      projectType: quote.projectType,
+      area: quote.area,
+      budget: quote.budget,
+      location: quote.location,
+      preferredDate: quote.preferredDate,
+      preferredTime: quote.preferredTime,
+      message: quote.message,
+    })
+    setSelectedQuote(quote)
+    setIsEditing(true)
+    setView('create')
+  }
+
+  const handleDelete = (id: string) => {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      const updatedQuotes = quotes.filter(q => q.id !== id)
+      saveQuotes(updatedQuotes)
+      setView('list')
+      alert('견적이 삭제되었습니다.')
     }
   }
 
-  const handleRemoveFile = (index: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index))
+  const handleViewDetail = (quote: QuoteData) => {
+    setSelectedQuote(quote)
+    setView('detail')
   }
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
-    console.log('Attachments:', attachments)
-    setIsSubmitted(true)
-
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        businessType: '',
-        projectType: '',
-        area: '',
-        budget: '',
-        location: '',
-        preferredDate: '',
-        preferredTime: '',
-        message: '',
-      })
-      setAttachments([])
-    }, 3000)
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   return (
@@ -90,365 +164,468 @@ export default function Quote() {
               <span className="text-xs font-medium tracking-[0.3em] uppercase text-theme-secondary">Get Started</span>
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-[1.1] tracking-tight text-theme-primary">
-              온라인 견적
+              견적 신청 게시판
             </h1>
             <p className="text-lg md:text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed font-light">
-              간단한 정보만 입력하시면 24시간 내로 상세한 견적을 보내드립니다
+              견적을 신청하고 관리할 수 있습니다
             </p>
           </div>
         </div>
       </section>
 
-      {/* Form Section */}
+      {/* Main Content */}
       <section className="relative py-16 border-t border-theme-accent-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {isSubmitted ? (
-            <div className="border-2 border-theme-accent bg-theme-accent-5 rounded-xl p-12 text-center">
-              <div className="text-6xl mb-4">✓</div>
-              <h2 className="text-3xl font-bold mb-4 text-theme-primary tracking-tight">
-                견적 신청이 완료되었습니다
-              </h2>
-              <p className="text-lg text-theme-secondary font-light">
-                24시간 내로 담당자가 연락드리겠습니다
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Contact Info */}
-              <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-theme-primary tracking-tight">연락처 정보</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-theme-secondary mb-2">
-                      이름 *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
-                      placeholder="홍길동"
-                    />
-                  </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-theme-secondary mb-2">
-                      연락처 *
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      required
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
-                      placeholder="010-1234-5678"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      이메일 *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="example@email.com"
-                    />
-                  </div>
-                </div>
+          {/* View: List */}
+          {view === 'list' && (
+            <div>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-theme-primary tracking-tight">
+                  견적 신청 목록 ({quotes.length})
+                </h2>
+                <button
+                  onClick={() => {
+                    setIsEditing(false)
+                    setSelectedQuote(null)
+                    setFormData({
+                      name: '',
+                      phone: '',
+                      email: '',
+                      businessType: '',
+                      projectType: '',
+                      area: '',
+                      budget: '',
+                      location: '',
+                      preferredDate: '',
+                      preferredTime: '',
+                      message: '',
+                    })
+                    setView('create')
+                  }}
+                  className="bg-theme-accent text-white px-6 py-3 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
+                >
+                  새 견적 신청
+                </button>
               </div>
 
-              {/* Project Info */}
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">프로젝트 정보</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="businessType" className="block text-sm font-medium text-gray-700 mb-2">
-                      업종 *
-                    </label>
-                    <select
-                      id="businessType"
-                      name="businessType"
-                      required
-                      value={formData.businessType}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="">선택해주세요</option>
-                      <option value="카페">카페</option>
-                      <option value="레스토랑">레스토랑</option>
-                      <option value="리테일">리테일/샵</option>
-                      <option value="오피스">오피스</option>
-                      <option value="뷰티">뷰티/살롱</option>
-                      <option value="기타">기타</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="projectType" className="block text-sm font-medium text-gray-700 mb-2">
-                      인테리어 범위 *
-                    </label>
-                    <select
-                      id="projectType"
-                      name="projectType"
-                      required
-                      value={formData.projectType}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="">선택해주세요</option>
-                      <option value="풀인테리어">풀인테리어 (전체)</option>
-                      <option value="부분인테리어">부분인테리어</option>
-                      <option value="리모델링">리모델링</option>
-                      <option value="상담필요">상담 후 결정</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-2">
-                      평수 *
-                    </label>
-                    <input
-                      type="text"
-                      id="area"
-                      name="area"
-                      required
-                      value={formData.area}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="예: 30평"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
-                      예산
-                    </label>
-                    <select
-                      id="budget"
-                      name="budget"
-                      value={formData.budget}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="">선택해주세요</option>
-                      <option value="3000만원 이하">3,000만원 이하</option>
-                      <option value="3000-5000만원">3,000만원 - 5,000만원</option>
-                      <option value="5000-1억원">5,000만원 - 1억원</option>
-                      <option value="1억원 이상">1억원 이상</option>
-                      <option value="상담필요">상담 후 결정</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                      위치 *
-                    </label>
-                    <input
-                      type="text"
-                      id="location"
-                      name="location"
-                      required
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="서울시 강남구"
-                    />
-                  </div>
+              {quotes.length === 0 ? (
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 rounded-xl p-12 text-center">
+                  <p className="text-theme-secondary text-lg">등록된 견적이 없습니다.</p>
+                  <p className="text-theme-secondary text-sm mt-2">첫 견적을 신청해보세요!</p>
                 </div>
-              </div>
-
-              {/* Meeting Schedule */}
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">미팅 희망 일정</h2>
+              ) : (
                 <div className="space-y-4">
-                  <div>
-                    <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-2">
-                      희망 날짜
-                    </label>
-                    <input
-                      type="date"
-                      id="preferredDate"
-                      name="preferredDate"
-                      value={formData.preferredDate}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-2">
-                      희망 시간
-                    </label>
-                    <select
-                      id="preferredTime"
-                      name="preferredTime"
-                      value={formData.preferredTime}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  {quotes.map((quote) => (
+                    <div
+                      key={quote.id}
+                      className="group border-2 border-theme-accent-20 hover:border-theme-accent-30 bg-theme-accent-5 backdrop-blur-sm p-6 transition-all duration-300 cursor-pointer"
+                      onClick={() => handleViewDetail(quote)}
                     >
-                      <option value="">선택해주세요</option>
-                      <option value="오전 10-12시">오전 10-12시</option>
-                      <option value="오후 12-2시">오후 12-2시</option>
-                      <option value="오후 2-4시">오후 2-4시</option>
-                      <option value="오후 4-6시">오후 4-6시</option>
-                      <option value="협의">협의 후 결정</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional Message */}
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">추가 요청사항</h2>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    상세 내용
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="프로젝트에 대한 자세한 내용이나 원하시는 스타일 등을 자유롭게 작성해주세요."
-                  />
-                </div>
-              </div>
-
-              {/* File Attachments */}
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">첨부파일</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      파일 첨부 (이미지, 도면, 참고자료 등)
-                    </label>
-                    <div className="flex items-center justify-center w-full">
-                      <label
-                        htmlFor="file-upload"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <svg
-                            className="w-10 h-10 mb-3 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            />
-                          </svg>
-                          <p className="mb-2 text-sm text-gray-500">
-                            <span className="font-semibold">클릭하여 파일 선택</span> 또는 드래그 앤 드롭
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-theme-primary tracking-tight">
+                              {quote.name}
+                            </h3>
+                            <span className="bg-theme-accent text-white px-3 py-1 text-xs font-medium tracking-wide">
+                              {quote.businessType}
+                            </span>
+                          </div>
+                          <p className="text-theme-secondary text-sm mb-2">
+                            📍 {quote.location} | 📐 {quote.area} | 💰 {quote.budget || '상담필요'}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            PNG, JPG, PDF, DOC (최대 10MB)
+                          <p className="text-theme-secondary text-sm">
+                            📧 {quote.email} | 📞 {quote.phone}
                           </p>
                         </div>
-                        <input
-                          id="file-upload"
-                          type="file"
-                          multiple
-                          onChange={handleFileChange}
-                          className="hidden"
-                          accept="image/*,.pdf,.doc,.docx"
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* File List */}
-                  {attachments.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-gray-700">
-                        첨부된 파일 ({attachments.length})
-                      </p>
-                      <div className="space-y-2">
-                        {attachments.map((file, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
-                          >
-                            <div className="flex items-center space-x-3 flex-1 min-w-0">
-                              <svg
-                                className="w-5 h-5 text-gray-400 flex-shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                              </svg>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">
-                                  {file.name}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  {formatFileSize(file.size)}
-                                </p>
-                              </div>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveFile(index)}
-                              className="ml-3 text-red-500 hover:text-red-700 transition-colors flex-shrink-0"
-                            >
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        ))}
+                        <div className="text-right">
+                          <p className="text-theme-secondary text-xs">
+                            {formatDate(quote.createdAt)}
+                          </p>
+                          {quote.updatedAt !== quote.createdAt && (
+                            <p className="text-theme-secondary text-xs opacity-75">
+                              (수정됨)
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  )}
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* View: Create/Edit */}
+          {view === 'create' && (
+            <div>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-theme-primary tracking-tight">
+                  {isEditing ? '견적 수정' : '새 견적 신청'}
+                </h2>
+                <button
+                  onClick={() => setView('list')}
+                  className="border-2 border-theme-accent-20 text-theme-secondary px-6 py-3 text-sm font-medium tracking-wide hover:border-theme-accent-30 bg-theme-accent-5 transition-all duration-300"
+                >
+                  목록으로
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Contact Info */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">연락처 정보</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-theme-secondary mb-2">
+                        이름 *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                        placeholder="홍길동"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-theme-secondary mb-2">
+                        연락처 *
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                        placeholder="010-1234-5678"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-theme-secondary mb-2">
+                        이메일 *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                        placeholder="example@email.com"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Project Info */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">프로젝트 정보</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="businessType" className="block text-sm font-medium text-theme-secondary mb-2">
+                        업종 *
+                      </label>
+                      <select
+                        id="businessType"
+                        name="businessType"
+                        required
+                        value={formData.businessType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      >
+                        <option value="">선택해주세요</option>
+                        <option value="카페">카페</option>
+                        <option value="레스토랑">레스토랑</option>
+                        <option value="리테일">리테일/샵</option>
+                        <option value="오피스">오피스</option>
+                        <option value="뷰티">뷰티/살롱</option>
+                        <option value="기타">기타</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="projectType" className="block text-sm font-medium text-theme-secondary mb-2">
+                        인테리어 범위 *
+                      </label>
+                      <select
+                        id="projectType"
+                        name="projectType"
+                        required
+                        value={formData.projectType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      >
+                        <option value="">선택해주세요</option>
+                        <option value="풀인테리어">풀인테리어 (전체)</option>
+                        <option value="부분인테리어">부분인테리어</option>
+                        <option value="리모델링">리모델링</option>
+                        <option value="상담필요">상담 후 결정</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="area" className="block text-sm font-medium text-theme-secondary mb-2">
+                        평수 *
+                      </label>
+                      <input
+                        type="text"
+                        id="area"
+                        name="area"
+                        required
+                        value={formData.area}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                        placeholder="예: 30평"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="budget" className="block text-sm font-medium text-theme-secondary mb-2">
+                        예산
+                      </label>
+                      <select
+                        id="budget"
+                        name="budget"
+                        value={formData.budget}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      >
+                        <option value="">선택해주세요</option>
+                        <option value="3000만원 이하">3,000만원 이하</option>
+                        <option value="3000-5000만원">3,000만원 - 5,000만원</option>
+                        <option value="5000-1억원">5,000만원 - 1억원</option>
+                        <option value="1억원 이상">1억원 이상</option>
+                        <option value="상담필요">상담 후 결정</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="location" className="block text-sm font-medium text-theme-secondary mb-2">
+                        위치 *
+                      </label>
+                      <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        required
+                        value={formData.location}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                        placeholder="서울시 강남구"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Meeting Schedule */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">미팅 희망 일정</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="preferredDate" className="block text-sm font-medium text-theme-secondary mb-2">
+                        희망 날짜
+                      </label>
+                      <input
+                        type="date"
+                        id="preferredDate"
+                        name="preferredDate"
+                        value={formData.preferredDate}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="preferredTime" className="block text-sm font-medium text-theme-secondary mb-2">
+                        희망 시간
+                      </label>
+                      <select
+                        id="preferredTime"
+                        name="preferredTime"
+                        value={formData.preferredTime}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      >
+                        <option value="">선택해주세요</option>
+                        <option value="오전 10-12시">오전 10-12시</option>
+                        <option value="오후 12-2시">오후 12-2시</option>
+                        <option value="오후 2-4시">오후 2-4시</option>
+                        <option value="오후 4-6시">오후 4-6시</option>
+                        <option value="협의">협의 후 결정</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Message */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h3 className="text-xl font-bold mb-6 text-theme-primary tracking-tight">추가 요청사항</h3>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-theme-secondary mb-2">
+                      상세 내용
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={6}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent bg-white text-theme-primary"
+                      placeholder="프로젝트에 대한 자세한 내용이나 원하시는 스타일 등을 자유롭게 작성해주세요."
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-4 justify-center pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setView('list')}
+                    className="border-2 border-theme-accent-20 text-theme-secondary px-8 py-4 text-sm font-medium tracking-wide hover:border-theme-accent-30 bg-theme-accent-5 transition-all duration-300"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-theme-accent text-white px-12 py-4 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
+                  >
+                    {isEditing ? '수정하기' : '견적 신청하기'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* View: Detail */}
+          {view === 'detail' && selectedQuote && (
+            <div>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-theme-primary tracking-tight">
+                  견적 상세보기
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(selectedQuote)}
+                    className="bg-theme-accent text-white px-6 py-3 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={() => handleDelete(selectedQuote.id)}
+                    className="border-2 border-red-500 text-red-500 px-6 py-3 text-sm font-medium tracking-wide hover:bg-red-50 transition-all duration-300"
+                  >
+                    삭제
+                  </button>
+                  <button
+                    onClick={() => setView('list')}
+                    className="border-2 border-theme-accent-20 text-theme-secondary px-6 py-3 text-sm font-medium tracking-wide hover:border-theme-accent-30 bg-theme-accent-5 transition-all duration-300"
+                  >
+                    목록으로
+                  </button>
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <div className="text-center pt-4">
-                <button
-                  type="submit"
-                  className="bg-primary-600 text-white px-12 py-4 rounded-full text-lg font-semibold hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl"
-                >
-                  견적 신청하기
-                </button>
-                <p className="text-sm text-gray-500 mt-4">
-                  * 표시된 항목은 필수 입력사항입니다
-                </p>
+              <div className="space-y-6">
+                {/* Header Info */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <h3 className="text-3xl font-bold text-theme-primary tracking-tight">
+                      {selectedQuote.name}
+                    </h3>
+                    <span className="bg-theme-accent text-white px-4 py-1.5 text-sm font-medium tracking-wide">
+                      {selectedQuote.businessType}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-theme-secondary">
+                    <div>
+                      <p className="text-sm opacity-75 mb-1">작성일</p>
+                      <p className="font-medium">{formatDate(selectedQuote.createdAt)}</p>
+                    </div>
+                    {selectedQuote.updatedAt !== selectedQuote.createdAt && (
+                      <div>
+                        <p className="text-sm opacity-75 mb-1">수정일</p>
+                        <p className="font-medium">{formatDate(selectedQuote.updatedAt)}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Contact Info */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">연락처 정보</h4>
+                  <div className="space-y-3 text-theme-secondary">
+                    <p><span className="opacity-75">📧 이메일:</span> {selectedQuote.email}</p>
+                    <p><span className="opacity-75">📞 연락처:</span> {selectedQuote.phone}</p>
+                  </div>
+                </div>
+
+                {/* Project Info */}
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                  <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">프로젝트 정보</h4>
+                  <div className="grid grid-cols-2 gap-4 text-theme-secondary">
+                    <div>
+                      <p className="text-sm opacity-75 mb-1">인테리어 범위</p>
+                      <p className="font-medium">{selectedQuote.projectType}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm opacity-75 mb-1">평수</p>
+                      <p className="font-medium">{selectedQuote.area}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm opacity-75 mb-1">예산</p>
+                      <p className="font-medium">{selectedQuote.budget || '상담 후 결정'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm opacity-75 mb-1">위치</p>
+                      <p className="font-medium">{selectedQuote.location}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Meeting Schedule */}
+                {(selectedQuote.preferredDate || selectedQuote.preferredTime) && (
+                  <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                    <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">미팅 희망 일정</h4>
+                    <div className="grid grid-cols-2 gap-4 text-theme-secondary">
+                      {selectedQuote.preferredDate && (
+                        <div>
+                          <p className="text-sm opacity-75 mb-1">희망 날짜</p>
+                          <p className="font-medium">{selectedQuote.preferredDate}</p>
+                        </div>
+                      )}
+                      {selectedQuote.preferredTime && (
+                        <div>
+                          <p className="text-sm opacity-75 mb-1">희망 시간</p>
+                          <p className="font-medium">{selectedQuote.preferredTime}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Additional Message */}
+                {selectedQuote.message && (
+                  <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
+                    <h4 className="text-xl font-bold mb-4 text-theme-primary tracking-tight">추가 요청사항</h4>
+                    <p className="text-theme-secondary leading-relaxed whitespace-pre-wrap">
+                      {selectedQuote.message}
+                    </p>
+                  </div>
+                )}
               </div>
-            </form>
+            </div>
           )}
+
         </div>
       </section>
 
