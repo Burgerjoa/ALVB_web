@@ -26,6 +26,7 @@ export default function Quote() {
   const [quotes, setQuotes] = useState<QuoteData[]>([])
   const [selectedQuote, setSelectedQuote] = useState<QuoteData | null>(null)
   const [isEditing, setIsEditing] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -41,18 +42,24 @@ export default function Quote() {
     message: '',
   })
 
-  // 로컬 스토리지에서 견적 목록 불러오기
+  // API에서 견적 목록 불러오기
   useEffect(() => {
-    const savedQuotes = localStorage.getItem('quotes')
-    if (savedQuotes) {
-      setQuotes(JSON.parse(savedQuotes))
-    }
+    fetchQuotes()
   }, [])
 
-  // 로컬 스토리지에 견적 목록 저장
-  const saveQuotes = (newQuotes: QuoteData[]) => {
-    localStorage.setItem('quotes', JSON.stringify(newQuotes))
-    setQuotes(newQuotes)
+  const fetchQuotes = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/quotes')
+      if (response.ok) {
+        const data = await response.json()
+        setQuotes(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch quotes:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (
@@ -65,47 +72,57 @@ export default function Quote() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (isEditing && selectedQuote) {
-      // 수정
-      const updatedQuotes = quotes.map(q =>
-        q.id === selectedQuote.id
-          ? { ...formData, id: selectedQuote.id, createdAt: selectedQuote.createdAt, updatedAt: new Date().toISOString() }
-          : q
-      )
-      saveQuotes(updatedQuotes)
-      alert('견적이 수정되었습니다.')
-    } else {
-      // 새로 작성
-      const newQuote: QuoteData = {
-        ...formData,
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-      saveQuotes([newQuote, ...quotes])
-      alert('견적이 등록되었습니다.')
-    }
+    try {
+      if (isEditing && selectedQuote) {
+        // 수정
+        const response = await fetch('/api/quotes', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...formData, id: selectedQuote.id }),
+        })
 
-    // 초기화
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      businessType: '',
-      projectType: '',
-      area: '',
-      budget: '',
-      location: '',
-      preferredDate: '',
-      preferredTime: '',
-      message: '',
-    })
-    setIsEditing(false)
-    setSelectedQuote(null)
-    setView('list')
+        if (response.ok) {
+          alert('견적이 수정되었습니다.')
+          await fetchQuotes()
+        }
+      } else {
+        // 새로 작성
+        const response = await fetch('/api/quotes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+
+        if (response.ok) {
+          alert('견적이 등록되었습니다.')
+          await fetchQuotes()
+        }
+      }
+
+      // 초기화
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        businessType: '',
+        projectType: '',
+        area: '',
+        budget: '',
+        location: '',
+        preferredDate: '',
+        preferredTime: '',
+        message: '',
+      })
+      setIsEditing(false)
+      setSelectedQuote(null)
+      setView('list')
+    } catch (error) {
+      console.error('Failed to submit quote:', error)
+      alert('견적 등록에 실패했습니다.')
+    }
   }
 
   const handleEdit = (quote: QuoteData) => {
@@ -127,12 +144,22 @@ export default function Quote() {
     setView('create')
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('정말 삭제하시겠습니까?')) {
-      const updatedQuotes = quotes.filter(q => q.id !== id)
-      saveQuotes(updatedQuotes)
-      setView('list')
-      alert('견적이 삭제되었습니다.')
+      try {
+        const response = await fetch(`/api/quotes?id=${id}`, {
+          method: 'DELETE',
+        })
+
+        if (response.ok) {
+          alert('견적이 삭제되었습니다.')
+          await fetchQuotes()
+          setView('list')
+        }
+      } catch (error) {
+        console.error('Failed to delete quote:', error)
+        alert('삭제에 실패했습니다.')
+      }
     }
   }
 
@@ -152,6 +179,15 @@ export default function Quote() {
     })
   }
 
+  const formatDateShort = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    })
+  }
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -167,7 +203,7 @@ export default function Quote() {
               견적 신청 게시판
             </h1>
             <p className="text-lg md:text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed font-light">
-              견적을 신청하고 관리할 수 있습니다
+              다른 분들의 견적 신청 사례를 참고하고, 나만의 견적을 신청하세요
             </p>
           </div>
         </div>
@@ -182,7 +218,7 @@ export default function Quote() {
             <div>
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-theme-primary tracking-tight">
-                  견적 신청 목록 ({quotes.length})
+                  전체 견적 신청 ({quotes.length})
                 </h2>
                 <button
                   onClick={() => {
@@ -205,49 +241,83 @@ export default function Quote() {
                   }}
                   className="bg-theme-accent text-white px-6 py-3 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
                 >
-                  새 견적 신청
+                  견적 신청하기
                 </button>
               </div>
 
-              {quotes.length === 0 ? (
+              {loading ? (
+                <div className="border-2 border-theme-accent-20 bg-theme-accent-5 rounded-xl p-12 text-center">
+                  <p className="text-theme-secondary text-lg">로딩 중...</p>
+                </div>
+              ) : quotes.length === 0 ? (
                 <div className="border-2 border-theme-accent-20 bg-theme-accent-5 rounded-xl p-12 text-center">
                   <p className="text-theme-secondary text-lg">등록된 견적이 없습니다.</p>
                   <p className="text-theme-secondary text-sm mt-2">첫 견적을 신청해보세요!</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {quotes.map((quote) => (
+                <div className="space-y-3">
+                  {/* 테이블 헤더 */}
+                  <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 border-2 border-theme-accent-20 bg-theme-accent-5 font-medium text-sm text-theme-secondary">
+                    <div className="col-span-1 text-center">번호</div>
+                    <div className="col-span-2">업종</div>
+                    <div className="col-span-4">제목</div>
+                    <div className="col-span-2">위치</div>
+                    <div className="col-span-2">평수</div>
+                    <div className="col-span-1 text-center">날짜</div>
+                  </div>
+
+                  {/* 게시글 목록 */}
+                  {quotes.map((quote, index) => (
                     <div
                       key={quote.id}
-                      className="group border-2 border-theme-accent-20 hover:border-theme-accent-30 bg-theme-accent-5 backdrop-blur-sm p-6 transition-all duration-300 cursor-pointer"
+                      className="group border-2 border-theme-accent-20 hover:border-theme-accent-30 bg-theme-accent-5 backdrop-blur-sm transition-all duration-300 cursor-pointer"
                       onClick={() => handleViewDetail(quote)}
                     >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-bold text-theme-primary tracking-tight">
-                              {quote.name}
-                            </h3>
-                            <span className="bg-theme-accent text-white px-3 py-1 text-xs font-medium tracking-wide">
+                      {/* 데스크톱 뷰 */}
+                      <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 items-center">
+                        <div className="col-span-1 text-center text-theme-secondary text-sm">
+                          {quotes.length - index}
+                        </div>
+                        <div className="col-span-2">
+                          <span className="bg-theme-accent text-white px-3 py-1 text-xs font-medium tracking-wide">
+                            {quote.businessType}
+                          </span>
+                        </div>
+                        <div className="col-span-4">
+                          <h3 className="text-base font-bold text-theme-primary tracking-tight group-hover:text-theme-accent transition-colors">
+                            {quote.projectType} - {quote.name}님의 {quote.businessType} 인테리어
+                          </h3>
+                        </div>
+                        <div className="col-span-2 text-theme-secondary text-sm">
+                          {quote.location}
+                        </div>
+                        <div className="col-span-2 text-theme-secondary text-sm">
+                          {quote.area}
+                        </div>
+                        <div className="col-span-1 text-center text-theme-secondary text-xs">
+                          {formatDateShort(quote.createdAt)}
+                        </div>
+                      </div>
+
+                      {/* 모바일 뷰 */}
+                      <div className="md:hidden p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-theme-secondary text-sm">#{quotes.length - index}</span>
+                            <span className="bg-theme-accent text-white px-2 py-0.5 text-xs font-medium tracking-wide">
                               {quote.businessType}
                             </span>
                           </div>
-                          <p className="text-theme-secondary text-sm mb-2">
-                            📍 {quote.location} | 📐 {quote.area} | 💰 {quote.budget || '상담필요'}
-                          </p>
-                          <p className="text-theme-secondary text-sm">
-                            📧 {quote.email} | 📞 {quote.phone}
-                          </p>
+                          <span className="text-theme-secondary text-xs">
+                            {formatDateShort(quote.createdAt)}
+                          </span>
                         </div>
-                        <div className="text-right">
-                          <p className="text-theme-secondary text-xs">
-                            {formatDate(quote.createdAt)}
-                          </p>
-                          {quote.updatedAt !== quote.createdAt && (
-                            <p className="text-theme-secondary text-xs opacity-75">
-                              (수정됨)
-                            </p>
-                          )}
+                        <h3 className="text-base font-bold text-theme-primary tracking-tight mb-2">
+                          {quote.projectType} - {quote.name}님의 {quote.businessType} 인테리어
+                        </h3>
+                        <div className="flex gap-4 text-theme-secondary text-sm">
+                          <span>📍 {quote.location}</span>
+                          <span>📐 {quote.area}</span>
                         </div>
                       </div>
                     </div>
@@ -262,7 +332,7 @@ export default function Quote() {
             <div>
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-theme-primary tracking-tight">
-                  {isEditing ? '견적 수정' : '새 견적 신청'}
+                  {isEditing ? '견적 수정' : '견적 신청하기'}
                 </h2>
                 <button
                   onClick={() => setView('list')}
@@ -540,7 +610,7 @@ export default function Quote() {
                 <div className="border-2 border-theme-accent-20 bg-theme-accent-5 backdrop-blur-sm rounded-xl p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <h3 className="text-3xl font-bold text-theme-primary tracking-tight">
-                      {selectedQuote.name}
+                      {selectedQuote.name}님의 견적 신청
                     </h3>
                     <span className="bg-theme-accent text-white px-4 py-1.5 text-sm font-medium tracking-wide">
                       {selectedQuote.businessType}
