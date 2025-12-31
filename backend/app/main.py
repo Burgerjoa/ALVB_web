@@ -15,6 +15,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:3001",
         "https://*.vercel.app",
+        "*",  # 프로덕션에서는 특정 도메인으로 변경 권장
     ],
     allow_credentials=True,
     allow_methods=["*"],
