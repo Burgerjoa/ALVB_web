@@ -190,5 +190,22 @@
     "message": "한식 퓨전 레스토랑 오픈합니다. 모던한 한국 스타일 원해요.",
     "createdAt": "2024-12-01T12:35:00.000Z",
     "updatedAt": "2024-12-01T12:35:00.000Z"
+  },
+  {
+    "id": "1733011201234",
+    "name": "김김김",
+    "phone": "010-3333-4444",
+    "email": "kim.seo@example.com",
+    "businessType": "리테일",
+    "projectType": "부분인테리어",
+    "area": "9999평",
+    "budget": "5000-9999억원",
+    "location": "서울 강북구",
+    "preferredDate": "2025-12-31",
+    "preferredTime": "오후 2-4시",
+    "message": "한식 퓨전 레스토랑 오픈합니다. 모던한 한국 스타일 원해요.",
+    "createdAt": "2024-12-01T12:35:00.000Z",
+    "updatedAt": "2024-12-01T12:35:00.000Z"
   }
+
 ]
