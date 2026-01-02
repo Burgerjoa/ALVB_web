@@ -5,13 +5,14 @@ import type { QuoteUpdate } from '@/types/quote'
 // GET: 특정 견적 조회
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { data, error } = await supabase
       .from('quotes')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error) {
@@ -41,9 +42,10 @@ export async function GET(
 // PUT: 견적 수정
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body: QuoteUpdate = await request.json()
 
     // None/undefined 값 제거
@@ -61,7 +63,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('quotes')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -92,13 +94,14 @@ export async function PUT(
 // DELETE: 견적 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { error } = await supabase
       .from('quotes')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
 
     if (error) {
       console.error('Supabase error:', error)
