@@ -53,3 +53,39 @@ uvicorn app.main:app --reload --port 8000
 - `POST /api/quotes` - 새 견적 생성
 - `PUT /api/quotes/{id}` - 견적 수정
 - `DELETE /api/quotes/{id}` - 견적 삭제
+
+## 배포 (Render.com)
+
+### 1. Render.com 계정 생성
+- https://render.com 접속
+- GitHub 계정으로 로그인
+
+### 2. 새 Web Service 생성
+1. Dashboard에서 **"New +"** → **"Web Service"** 클릭
+2. GitHub 저장소 연결 (본 저장소 선택)
+3. 다음 설정 입력:
+   - **Name**: `alvb-fastapi` (또는 원하는 이름)
+   - **Root Directory**: `backend`
+   - **Environment**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+### 3. 환경 변수 설정
+Render 대시보드의 Environment 탭에서 다음 변수 추가:
+```
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_KEY=your-anon-key
+```
+
+### 4. 배포
+- **"Create Web Service"** 클릭
+- 자동으로 빌드 및 배포 시작
+- 배포 완료 후 제공되는 URL로 API 접근 가능
+- 이후 GitHub에 푸시하면 자동 재배포
+
+### render.yaml을 사용한 자동 배포
+본 프로젝트는 `render.yaml` 파일이 포함되어 있어 Render에서 "Blueprint" 방식으로도 배포 가능:
+1. Render Dashboard에서 **"New +"** → **"Blueprint"** 선택
+2. 저장소 연결
+3. `render.yaml` 자동 감지 및 설정 적용
+4. 환경 변수만 수동으로 입력 후 배포
