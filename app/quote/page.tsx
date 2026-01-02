@@ -21,7 +21,8 @@ interface QuoteData {
   updated_at: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Next.js API Routes를 사용하므로 같은 도메인 사용
+const API_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
 export default function Quote() {
   const [view, setView] = useState<'list' | 'create' | 'detail'>('list')
