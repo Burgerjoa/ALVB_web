@@ -83,9 +83,9 @@ SUPABASE_KEY=your-anon-key
 - 배포 완료 후 제공되는 URL로 API 접근 가능
 - 이후 GitHub에 푸시하면 자동 재배포
 
-### render.yaml을 사용한 자동 배포
-본 프로젝트는 `render.yaml` 파일이 포함되어 있어 Render에서 "Blueprint" 방식으로도 배포 가능:
+### render.yaml을 사용한 자동 배포 (추천)
+본 프로젝트는 루트 디렉토리에 `render.yaml` 파일이 포함되어 있어 Render에서 "Blueprint" 방식으로 간편하게 배포 가능:
 1. Render Dashboard에서 **"New +"** → **"Blueprint"** 선택
-2. 저장소 연결
+2. GitHub 저장소 연결
 3. `render.yaml` 자동 감지 및 설정 적용
-4. 환경 변수만 수동으로 입력 후 배포
+4. 환경 변수(`SUPABASE_URL`, `SUPABASE_KEY`)만 입력 후 배포
