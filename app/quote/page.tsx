@@ -30,6 +30,9 @@ export default function Quote() {
   const [selectedQuote, setSelectedQuote] = useState<QuoteData | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [password, setPassword] = useState('')
+  const [pendingQuote, setPendingQuote] = useState<QuoteData | null>(null)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -167,8 +170,28 @@ export default function Quote() {
   }
 
   const handleViewDetail = (quote: QuoteData) => {
-    setSelectedQuote(quote)
-    setView('detail')
+    setPendingQuote(quote)
+    setShowPasswordModal(true)
+  }
+
+  const handlePasswordSubmit = () => {
+    // 간단한 비밀번호 체크 (실제로는 백엔드에서 처리해야 함)
+    if (password === '1234') {
+      setSelectedQuote(pendingQuote)
+      setView('detail')
+      setShowPasswordModal(false)
+      setPassword('')
+      setPendingQuote(null)
+    } else {
+      alert('비밀번호가 올바르지 않습니다.')
+    }
+  }
+
+  const maskName = (name: string) => {
+    if (!name) return '***'
+    if (name.length <= 1) return '*'
+    if (name.length === 2) return name[0] + '*'
+    return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1]
   }
 
   const formatDate = (dateString: string) => {
@@ -288,7 +311,7 @@ export default function Quote() {
                         </div>
                         <div className="col-span-4">
                           <h3 className="text-base font-bold text-theme-primary tracking-tight group-hover:text-theme-accent transition-colors">
-                            {quote.project_type} - {quote.name}님의 {quote.business_type} 인테리어
+                            {quote.project_type} - {maskName(quote.name)}님의 {quote.business_type} 인테리어
                           </h3>
                         </div>
                         <div className="col-span-2 text-theme-secondary text-sm">
@@ -316,7 +339,7 @@ export default function Quote() {
                           </span>
                         </div>
                         <h3 className="text-base font-bold text-theme-primary tracking-tight mb-2">
-                          {quote.project_type} - {quote.name}님의 {quote.business_type} 인테리어
+                          {quote.project_type} - {maskName(quote.name)}님의 {quote.business_type} 인테리어
                         </h3>
                         <div className="flex gap-4 text-theme-secondary text-sm">
                           <span>📍 {quote.location}</span>
@@ -734,6 +757,50 @@ export default function Quote() {
       </section>
 
       <Footer />
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-8 max-w-md w-full border-2 border-theme-accent-20">
+            <h3 className="text-2xl font-bold mb-4 text-theme-primary tracking-tight">
+              비밀번호 입력
+            </h3>
+            <p className="text-theme-secondary mb-6">
+              견적 상세 내용을 확인하려면 비밀번호를 입력하세요.
+            </p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit()}
+              placeholder="비밀번호 입력"
+              className="w-full px-4 py-3 border-2 border-theme-accent-20 rounded-lg focus:ring-2 focus:border-theme-accent mb-6 text-theme-primary"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowPasswordModal(false)
+                  setPassword('')
+                  setPendingQuote(null)
+                }}
+                className="flex-1 border-2 border-theme-accent-20 text-theme-secondary px-6 py-3 text-sm font-medium tracking-wide hover:border-theme-accent-30 bg-theme-accent-5 transition-all duration-300"
+              >
+                취소
+              </button>
+              <button
+                onClick={handlePasswordSubmit}
+                className="flex-1 bg-theme-accent text-white px-6 py-3 text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300"
+              >
+                확인
+              </button>
+            </div>
+            <p className="text-xs text-theme-secondary mt-4 text-center">
+              테스트 비밀번호: 1234
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
