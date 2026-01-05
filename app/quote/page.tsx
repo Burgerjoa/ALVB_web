@@ -23,6 +23,7 @@ interface QuoteData {
 
 // Next.js API Routes를 사용하므로 같은 도메인 사용
 const API_URL = process.env.NEXT_PUBLIC_API_URL || ''
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY || ''
 
 export default function Quote() {
   const [view, setView] = useState<'list' | 'create' | 'detail'>('list')
@@ -86,7 +87,10 @@ export default function Quote() {
         // 수정
         const response = await fetch(`${API_URL}/api/quotes/${selectedQuote.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': API_KEY
+          },
           body: JSON.stringify(formData),
         })
 
@@ -98,7 +102,10 @@ export default function Quote() {
         // 새로 작성
         const response = await fetch(`${API_URL}/api/quotes`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': API_KEY
+          },
           body: JSON.stringify(formData),
         })
 
@@ -155,6 +162,9 @@ export default function Quote() {
       try {
         const response = await fetch(`${API_URL}/api/quotes/${id}`, {
           method: 'DELETE',
+          headers: {
+            'X-API-Key': API_KEY
+          }
         })
 
         if (response.ok) {

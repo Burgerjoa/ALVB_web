@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { validateApiKey, unauthorizedResponse } from '@/lib/auth'
 import type { QuoteUpdate } from '@/types/quote'
 
-// GET: 특정 견적 조회
+// GET: 특정 견적 조회 (공개)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -39,11 +40,16 @@ export async function GET(
   }
 }
 
-// PUT: 견적 수정
+// PUT: 견적 수정 (API 키 필요)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // API 키 검증
+  if (!validateApiKey(request)) {
+    return unauthorizedResponse()
+  }
+
   try {
     const { id } = await params
     const body: QuoteUpdate = await request.json()
@@ -91,11 +97,16 @@ export async function PUT(
   }
 }
 
-// DELETE: 견적 삭제
+// DELETE: 견적 삭제 (API 키 필요)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // API 키 검증
+  if (!validateApiKey(request)) {
+    return unauthorizedResponse()
+  }
+
   try {
     const { id } = await params
     const { error } = await supabase
